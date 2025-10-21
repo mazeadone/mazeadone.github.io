@@ -22,111 +22,60 @@
         linear-gradient(180deg, #fff 0, var(--paper) 30%, #fff 100%);
       min-height:100svh;
     }
-    header{
-      position:relative;
-      padding: clamp(18px, 4vw, 36px) 16px 8px;
-      text-align:center;
-    }
-    .title{
-      display:inline-block;
-      font-weight:900;
-      font-size: clamp(22px, 5vw, 44px);
-      letter-spacing:.5px;
-      color:white;
-      background: var(--nick-orange);
-      padding:.35em .6em;
-      border-radius: 18px;
-      box-shadow: 0 6px 0 #c65600, 0 10px 20px rgba(0,0,0,.15);
-      transform: rotate(-1deg);
-    }
-    .subtitle{
-      margin:.8rem auto 0;
-      max-width: 760px;
-      color:#10410a;
-      font-weight:600;
-    }
+    header{ position:relative; padding: clamp(18px, 4vw, 36px) 16px 8px; text-align:center; }
+    .title{ display:inline-block; font-weight:900; font-size: clamp(22px, 5vw, 44px); letter-spacing:.5px; color:white; background: var(--nick-orange); padding:.35em .6em; border-radius: 18px; box-shadow: 0 6px 0 #c65600, 0 10px 20px rgba(0,0,0,.15); transform: rotate(-1deg); }
+    .subtitle{ margin:.8rem auto 0; max-width: 760px; color:#10410a; font-weight:600; }
 
-    /* layout */
-    .wrap{
-      width:min(1100px, 92vw);
-      margin: 18px auto 48px;
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:18px;
-    }
-    @media (min-width:900px){
-      .wrap{grid-template-columns: 1fr 1fr}
-    }
+    .wrap{ width:min(1100px, 92vw); margin: 18px auto 48px; display:grid; grid-template-columns: 1fr; gap:18px; }
+    @media (min-width:900px){ .wrap{grid-template-columns: 1fr 1fr} }
 
-    .card{
-      background:#ffffff;
-      border:3px solid var(--ink);
-      border-radius:24px;
-      padding:18px;
-      box-shadow: 0 8px 0 rgba(0,0,0,.18);
-    }
-    .card h2{
-      margin:0 0 10px;
-      font-size:clamp(18px, 2.6vw, 24px);
-      display:flex;align-items:center;gap:.5rem;
-    }
-    .tag{
-      display:inline-block;
-      font-size:.8rem;
-      background: var(--slime);
-      color:#0c2a02;
-      padding:.25rem .5rem;
-      border-radius:999px;
-      border:2px solid #0c2a02;
-    }
+    .card{ background:#ffffff; border:3px solid var(--ink); border-radius:24px; padding:18px; box-shadow: 0 8px 0 rgba(0,0,0,.18); }
+    .card h2{ margin:0 0 10px; font-size:clamp(18px, 2.6vw, 24px); display:flex;align-items:center;gap:.5rem; }
+    .tag{ display:inline-block; font-size:.8rem; background: var(--slime); color:#0c2a02; padding:.25rem .5rem; border-radius:999px; border:2px solid #0c2a02; }
 
-    /* QR box */
-    .qr-box{
-      display:grid;
-      place-items:center;
-      aspect-ratio: 1 / 1;
-      background: repeating-linear-gradient(45deg, #f7f7f7 0 12px, #efefef 12px 24px);
-      border:3px dashed var(--deep-sky);
-      border-radius: 18px;
-      overflow:hidden;
-      margin-top:.5rem;
-    }
+    .qr-box{ display:grid; place-items:center; aspect-ratio: 1 / 1; background: repeating-linear-gradient(45deg, #f7f7f7 0 12px, #efefef 12px 24px); border:3px dashed var(--deep-sky); border-radius: 18px; overflow:hidden; margin-top:.5rem; }
     .qr-box img{ width: min(80%, 360px); height:auto; image-rendering: crisp-edges; image-rendering: pixelated; }
-    .qr-placeholder{
-      text-align:center; padding:12px; color:#666; font-weight:600;
-    }
+    .qr-placeholder{ text-align:center; padding:12px; color:#666; font-weight:600; }
 
     .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
-    .btn{
-      appearance:none; border:none; cursor:pointer;
-      background: var(--nick-orange); color:white; font-weight:800;
-      padding:.7rem 1rem; border-radius: 14px; box-shadow:0 4px 0 #c65600;
-    }
+    .btn{ appearance:none; border:none; cursor:pointer; background: var(--nick-orange); color:white; font-weight:800; padding:.7rem 1rem; border-radius: 14px; box-shadow:0 4px 0 #c65600; }
     .btn.secondary{ background: var(--deep-sky); box-shadow:0 4px 0 #007ec2; }
+    .btn.ghost{ background:#fff; color:#000; border:2px solid #000; box-shadow:none; }
 
-    /* Map */
-    .map{
-      width:100%; aspect-ratio: 4 / 3; background:#e9f7ff;
-      border:3px solid var(--ink); border-radius:18px; overflow:hidden;
-    }
+    .map{ width:100%; aspect-ratio: 4 / 3; background:#e9f7ff; border:3px solid var(--ink); border-radius:18px; overflow:hidden; }
     .map .label{ font: 700 12px/1 system-ui, sans-serif; paint-order: stroke; stroke:#fff; stroke-width:4px; }
 
-    footer{
-      text-align:center; padding:24px 16px; color:#333; font-size:.95rem;
-    }
-    .slime-drip{
-      position:absolute; inset:auto 0 -1px 0; height:40px; overflow:visible; pointer-events:none;
-    }
+    footer{ text-align:center; padding:24px 16px; color:#333; font-size:.95rem; }
+
+    .challenge{ max-width:800px; margin:0 auto; display:none; }
+    .challenge.active{ display:block; }
+    .stack{ display:grid; gap:12px; }
+    input[type="text"], input[type="number"], textarea{ padding:.7rem 1rem; border:2px solid #333; border-radius:12px; font-size:1rem; }
+    .hint{ font-size:.9rem; color:#444 }
+    .success{ background:#e7ffe8; border:2px solid #35a145; padding:12px; border-radius:12px; }
+    .error{ background:#fff0f0; border:2px solid #cc3b3b; padding:12px; border-radius:12px; }
+    .tiny{ font-size:.85rem; color:#333 }
+
+    .timer-row{display:flex; align-items:center; gap:14px; margin:6px 0 12px}
+    .timer-digits{font: 800 clamp(18px,3.2vw,28px)/1.1 system-ui, sans-serif; letter-spacing:.02em}
+    .stopwatch{width:64px; height:64px; position:relative}
+    .stopwatch svg{width:100%; height:100%; display:block}
+    .stopwatch .ring{fill:none; stroke-width:8;}
+    .stopwatch .ring.orange{stroke: var(--nick-orange); opacity:.9}
+    .stopwatch .ring.blue{stroke: var(--deep-sky); opacity:.9}
+    .stopwatch.running .ring.orange{animation: spin 2.4s linear infinite}
+    .stopwatch.running .ring.blue{animation: spin 3.3s linear infinite reverse}
+    @keyframes spin{ to{ transform: rotate(360deg) } }
+    .timer-note{font-size:.85rem; color:#444}
   </style>
 </head>
 <body>
   <header>
     <div class="title">ACM/TDA QR Scavanger Hunt!</div>
     <p class="subtitle">Scan → Solve → Scoot! Keep this page open during the hunt. Drop in your team’s starter QR or use the printed codes around campus.</p>
-   
+  </header>
 
   <main class="wrap">
-    <!-- LEFT: QR box -->
     <section class="card">
       <h2>Starter QR <span class="tag">Scan me first</span></h2>
       <div class="qr-box" id="qrBox" aria-label="QR code area">
@@ -136,46 +85,35 @@
       <div class="actions">
         <label class="btn" for="qrInput">Upload QR</label>
         <input id="qrInput" type="file" accept="image/*" hidden>
-        <button class="btn secondary" id="howBtn" type="button">How it works</button>
+        <a class="btn ghost" id="openAcm" href="#" target="_blank" rel="noopener">Open ACM Site</a>
+        <a class="btn secondary" id="openChallenge" href="#">Open Challenge</a>
+        <button class="btn" id="howBtn" type="button">How it works</button>
       </div>
       <div id="how" style="display:none; margin-top:10px; background:#fff7ea; border:2px dashed #ffcf8a; border-radius:12px; padding:10px">
         <strong>Tip:</strong> Teams can start at different QR codes. This page just previews the code if you upload it. You’ll actually scan physical QR posters around campus to jump between clues.
       </div>
     </section>
 
-    <!-- RIGHT: rough campus map (illustrative, not to scale) -->
     <section class="card">
       <h2>Rough Map · Georgia Southern University</h2>
       <svg class="map" viewBox="0 0 800 600" role="img" aria-label="Rough campus map with a few labeled landmarks">
-        <!-- water / green blocks -->
         <rect x="0" y="0" width="800" height="600" fill="#d6f5dd"/>
         <rect x="520" y="80" width="220" height="120" rx="10" fill="#a6e3ff" stroke="#0b6ea8" stroke-width="3"/>
         <text x="630" y="150" text-anchor="middle" class="label" fill="#0b6ea8">Lake / Pond</text>
-
-        <!-- paths -->
         <path d="M120 520 L680 520" stroke="#c2b280" stroke-width="10" stroke-linecap="round"/>
         <path d="M120 520 C 220 430, 260 360, 300 300" stroke="#c2b280" stroke-width="10" fill="none"/>
-
-        <!-- buildings (rough) -->
         <rect x="80" y="440" width="120" height="80" rx="8" fill="#ffffff" stroke="#333" stroke-width="3"/>
         <text x="140" y="485" text-anchor="middle" class="label" fill="#333">Hanner</text>
-
         <rect x="300" y="260" width="160" height="90" rx="8" fill="#ffffff" stroke="#333" stroke-width="3"/>
         <text x="380" y="305" text-anchor="middle" class="label" fill="#333">Henderson Library</text>
-
         <rect x="520" y="260" width="140" height="80" rx="8" fill="#ffffff" stroke="#333" stroke-width="3"/>
         <text x="590" y="300" text-anchor="middle" class="label" fill="#333">Student Union</text>
-
         <rect x="260" y="420" width="140" height="80" rx="8" fill="#ffffff" stroke="#333" stroke-width="3"/>
         <text x="330" y="465" text-anchor="middle" class="label" fill="#333">IT / CS</text>
-
         <rect x="620" y="460" width="120" height="70" rx="8" fill="#ffffff" stroke="#333" stroke-width="3"/>
         <text x="680" y="500" text-anchor="middle" class="label" fill="#333">Stadium</text>
-
         <circle cx="460" cy="200" r="18" fill="#6bd425" stroke="#0c2a02" stroke-width="3"/>
         <text x="460" y="195" text-anchor="middle" class="label" fill="#0c2a02">Rotunda</text>
-
-        <!-- legend -->
         <rect x="24" y="24" width="190" height="92" rx="10" fill="#ffffff" stroke="#333" stroke-width="2"/>
         <text x="40" y="50" class="label" fill="#333">Legend</text>
         <rect x="40" y="62" width="16" height="16" fill="#ffffff" stroke="#333" stroke-width="2"/>
@@ -185,6 +123,44 @@
       </svg>
       <p style="margin:.6rem 0 0; font-size:.9rem; color:#444">This is a playful, not-to-scale illustration. Use posted QR signs for exact locations.</p>
     </section>
+
+    <section id="challenge" class="challenge card">
+      <h2>Mini Programming Challenge <span class="tag">Demo</span></h2>
+      <div class="timer-row">
+        <div id="stopwatch" class="stopwatch" aria-label="challenge timer">
+          <svg viewBox="0 0 100 100">
+            <g transform="translate(50,50)">
+              <circle class="ring orange" r="36" transform="rotate(0)"/>
+              <circle class="ring blue" r="24" transform="rotate(0)"/>
+            </g>
+          </svg>
+        </div>
+        <div>
+          <div class="timer-digits" id="timerDigits">00:00.0</div>
+          <div class="timer-note">Timer starts when challenge opens and stops on a correct submission.</div>
+        </div>
+      </div>
+      <div class="stack">
+        <p><strong>Task:</strong> Given a comma-separated list of integers, <strong>remove duplicates</strong> and <strong>output the numbers in ascending order</strong> as a comma-separated list.</p>
+        <div class="hint">Example: input <code>5, 3, 5, 2</code> → output <code>2,3,5</code>.</div>
+        <label>Team or Name
+          <input id="ccName" type="text" placeholder="Team Eagles (auto from ?team=...)" />
+        </label>
+        <label>Input (comma-separated integers)
+          <input id="codeInput" type="text" placeholder="e.g., 5, 3, 5, 2, 9, 3" />
+        </label>
+        <label>Your Output (what your program would print)
+          <input id="ccAnswer" type="text" placeholder="e.g., 2,3,5,9" />
+        </label>
+        <div class="actions">
+          <button class="btn" id="ccSubmit" type="button">Submit Answer</button>
+          <button class="btn ghost" id="genSample" type="button">New Sample</button>
+          <button class="btn secondary" id="ccHint" type="button">Need a hint?</button>
+          <button class="btn" id="ccReset" type="button">Reset Timer</button>
+        </div>
+        <div id="ccMsg" aria-live="polite"></div>
+      </div>
+    </section>
   </main>
 
   <footer>
@@ -192,32 +168,104 @@
   </footer>
 
   <script>
-    // Toggle how-it-works
-    document.getElementById('howBtn').addEventListener('click', ()=>{
-      const box = document.getElementById('how');
-      box.style.display = box.style.display === 'none' ? 'block' : 'none';
-    });
+    const ACM_SITE_URL = 'https://GSACM.github.io';
+    const GOOGLE_FORM = { enabled:false, action:'', entries:{} };
 
-    // Upload & preview QR
+    function parseInts(csv){ return (csv||'').split(/[ ,]+/).map(s=>s.trim()).filter(Boolean).map(Number).filter(Number.isFinite); }
+    function uniqueSorted(arr){ return [...new Set(arr)].sort((a,b)=>a-b); }
+    function canonicalCSV(arr){ return arr.join(','); }
+    function makeSample(){ const len=6+Math.floor(Math.random()*5); const nums=Array.from({length:len},()=>Math.floor(Math.random()*21)); return canonicalCSV(nums); }
+
+    let _tStart=null,_tRAF=null,_elapsed=0,_running=false;
+    const digitsEl = ()=> document.getElementById('timerDigits');
+    const swEl = ()=> document.getElementById('stopwatch');
+    function fmt(ms){ const s=Math.floor(ms/1000); const m=Math.floor(s/60); const r=s%60; const d=Math.floor((ms%1000)/100); return `${String(m).padStart(2,'0')}:${String(r).padStart(2,'0')}.${d}`; }
+    function tick(){ _elapsed=performance.now()-_tStart; const d=digitsEl(); if(d) d.textContent=fmt(_elapsed); _tRAF=requestAnimationFrame(tick); }
+    function startTimer(){ if(_running) return; _tStart=performance.now(); _running=true; const s=swEl(); if(s) s.classList.add('running'); _tRAF=requestAnimationFrame(tick); }
+    function stopTimer(){ if(!_running) return null; cancelAnimationFrame(_tRAF); _tRAF=null; _running=false; const s=swEl(); if(s) s.classList.remove('running'); return _elapsed; }
+    function resetTimer(){ if(_tRAF){ cancelAnimationFrame(_tRAF); _tRAF=null; } _running=false; _elapsed=0; const d=digitsEl(); if(d) d.textContent='00:00.0'; const s=swEl(); if(s) s.classList.remove('running'); }
+
+    document.getElementById('howBtn').addEventListener('click', ()=>{ const box=document.getElementById('how'); box.style.display = box.style.display==='none' ? 'block' : 'none'; });
+
     const input = document.getElementById('qrInput');
     const img = document.getElementById('qrImg');
     const ph = document.getElementById('qrPh');
     input.addEventListener('change', (e)=>{
-      const file = e.target.files?.[0];
-      if(!file) return;
-      const url = URL.createObjectURL(file);
-      img.src = url; img.hidden = false; ph.hidden = true;
+      const file = e.target.files && e.target.files[0];
+      if(!file || !file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = (ev)=>{ img.src = ev.target.result; img.hidden=false; ph.hidden=true; };
+      reader.readAsDataURL(file);
     });
 
-    // Drag & drop support
     const qrBox = document.getElementById('qrBox');
-    ;['dragenter','dragover'].forEach(ev=>qrBox.addEventListener(ev, e=>{e.preventDefault(); qrBox.style.borderColor = '#1fbfff'}));
-    ;['dragleave','drop'].forEach(ev=>qrBox.addEventListener(ev, e=>{e.preventDefault(); qrBox.style.borderColor = 'var(--deep-sky)'}));
+    ['dragenter','dragover'].forEach(ev=>qrBox.addEventListener(ev, e=>{ e.preventDefault(); qrBox.style.borderColor='#1fbfff'; }));
+    ['dragleave','drop'].forEach(ev=>qrBox.addEventListener(ev, e=>{ e.preventDefault(); qrBox.style.borderColor='var(--deep-sky)'; }));
     qrBox.addEventListener('drop', (e)=>{
-      const file = e.dataTransfer?.files?.[0];
-      if(!file) return; const url = URL.createObjectURL(file);
-      img.src = url; img.hidden = false; ph.hidden = true;
+      const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if(!file || !file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = (ev)=>{ img.src = ev.target.result; img.hidden=false; ph.hidden=true; };
+      reader.readAsDataURL(file);
     });
+
+    const openAcm = document.getElementById('openAcm');
+    openAcm.href = ACM_SITE_URL;
+    document.getElementById('openChallenge').addEventListener('click', (e)=>{ e.preventDefault(); showChallenge(); window.history.replaceState({}, '', '?challenge=1'); });
+
+    const usp = new URLSearchParams(location.search);
+    const challengeEl = document.getElementById('challenge');
+    const ccName = document.getElementById('ccName');
+    const ccAnswer = document.getElementById('ccAnswer');
+    const ccMsg = document.getElementById('ccMsg');
+
+    function showChallenge(){
+      challengeEl.classList.add('active');
+      const inEl=document.getElementById('codeInput'); if(inEl && !inEl.value.trim()) inEl.value=makeSample();
+      resetTimer(); startTimer();
+      challengeEl.scrollIntoView({behavior:'smooth'});
+    }
+
+    if(usp.get('challenge')==='1'){ showChallenge(); }
+    const team = usp.get('team'); if(team) ccName.value = team;
+
+    document.getElementById('ccHint').addEventListener('click', ()=>{
+      ccMsg.innerHTML = '<div class="hint">Approach: split the input by commas/spaces → numbers, remove duplicates (Set), sort with (a-b), then join with commas. Output must match exactly.</div>';
+    });
+    document.getElementById('ccReset').addEventListener('click', resetTimer);
+
+    // New Sample button — fill input with a fresh random list and clear previous output/message
+    (function(){
+      const genBtn = document.getElementById('genSample');
+      if(genBtn){
+        genBtn.addEventListener('click', ()=>{
+          const inEl = document.getElementById('codeInput');
+          if(inEl) inEl.value = makeSample();
+          if(ccAnswer) ccAnswer.value = '';
+          if(ccMsg) ccMsg.textContent = '';
+        });
+      }
+    })();
+
+    function logToGoogleForm(){ /* disabled for demo */ }
+
+    document.getElementById('ccSubmit').addEventListener('click', ()=>{
+      const who = ccName.value.trim() || team || 'anonymous';
+      const inputVal = document.getElementById('codeInput').value.trim();
+      const userOutRaw = ccAnswer.value.trim();
+      const correctArr = uniqueSorted(parseInts(inputVal));
+      const correctOut = canonicalCSV(correctArr);
+      const userArr = parseInts(userOutRaw);
+      const userCanon = canonicalCSV(userArr);
+      const isCorrect = (userCanon === correctOut);
+      let elapsedMs = null; if(isCorrect){ elapsedMs = stopTimer(); }
+      const timeText = elapsedMs!==null ? ` Time: <strong>${fmt(elapsedMs)}</strong>.` : '';
+      ccMsg.innerHTML = isCorrect
+        ? `<div class="success">🎉 Correct! Input: <code>${inputVal||'(empty)'}</code> → <strong>${correctOut}</strong>. ${who}, great job!${timeText}</div>`
+        : `<div class="error">❌ Not quite. For input <code>${inputVal||'(empty)'}</code>, the expected output is <strong>${correctOut}</strong>. Your output was <code>${userCanon||'(empty)'}</code>. Keep trying—the timer is still running.</div>`;
+    });
+
+    (function selfTests(){ try{ const tests=[$1,{inp:'-1, -1, 2, -3, 2', exp:'-3,-1,2'}]; console.table(tests.map(t=>({input:t.inp,got:canonicalCSV(uniqueSorted(parseInts(t.inp))),exp:t.exp}))); }catch(e){ console.warn('Self-tests failed',e); }})();
   </script>
 </body>
 </html>
