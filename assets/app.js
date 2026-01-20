@@ -88,7 +88,7 @@ const STEPS = {
     options: [
       { id: 'library', label: '📚 + 😼' },
       { id: 'lakeside', label: '🍽️ + 🌊' },
-      { id: 'gym', label: '🏋️ + :trollface:' },
+      { id: 'gym', label: '🏋️ + 👻' },
       { id: 'lab', label: '🧪' },
     ],
     correct: ['lakeside'],
