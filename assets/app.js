@@ -86,10 +86,10 @@ const STEPS = {
     prompt: 'Pick the picture that best matches: “You can’t use your brain before you’ve indulged in a buffet with a lagoon view.”',
     type: 'mcq',
     options: [
-      { id: 'library', label: '📚 A quiet place to read' },
-      { id: 'lakeside', label: '🍽️ Buffet + 🌊 lagoon view' },
-      { id: 'gym', label: '🏋️ A place to lift' },
-      { id: 'lab', label: '🧪 A science lab' },
+      { id: 'library', label: '📚 + 😼' },
+      { id: 'lakeside', label: '🍽️ + 🌊' },
+      { id: 'gym', label: '🏋️ + :trollface:' },
+      { id: 'lab', label: '🧪' },
     ],
     correct: ['lakeside'],
     nextHint: 'Head to **Lakeside Dining Hall**. Find the slime poster with the next QR (high-traffic entrance area).'
@@ -99,10 +99,10 @@ const STEPS = {
     prompt: 'Pick the option that “belongs” with learning to build apps and implementations (think: coding, labs, tech).',
     type: 'mcq',
     options: [
-      { id: 'art', label: '🎨 Art studio' },
-      { id: 'it', label: '💻 Computers + labs + tech help' },
-      { id: 'theater', label: '🎭 Theater stage' },
-      { id: 'pool', label: '🏊 Pool' },
+      { id: 'art', label: '🎨' },
+      { id: 'it', label: '💻 + 📟' },
+      { id: 'theater', label: '🎭' },
+      { id: 'pool', label: '🏊' },
     ],
     correct: ['it'],
     nextHint: 'Go to the **IT Building**. Find the slime poster + QR near a main hallway / lobby.'
@@ -112,10 +112,10 @@ const STEPS = {
     prompt: 'Which picture best matches: “A building of many branches of discipline.”',
     type: 'mcq',
     options: [
-      { id: 'iab', label: '🌳 Many branches + 📚 many subjects' },
-      { id: 'dining', label: '🍽️ Dining hall' },
-      { id: 'union', label: '🏛️ Student union' },
-      { id: 'parking', label: '🚗 Parking deck' },
+      { id: 'iab', label: '🌳 + 📚' },
+      { id: 'dining', label: '🍽️' },
+      { id: 'union', label: '🏛️ + 💸' },
+      { id: 'parking', label: '🚗 + 📥' },
     ],
     correct: ['iab'],
     nextHint: 'Go to the **Interdisciplinary Academic Building (IAB)**. Find the final slime poster + QR.'
@@ -125,10 +125,10 @@ const STEPS = {
     prompt: 'Last one: pick the icon that means “finish / done / claim prize.”',
     type: 'mcq',
     options: [
-      { id: 'done', label: '🏁 Finish line' },
-      { id: 'sleep', label: '😴 Nap' },
-      { id: 'again', label: '🔁 Restart' },
-      { id: 'lost', label: '❓ Confused' },
+      { id: 'done', label: '🏁' },
+      { id: 'sleep', label: '😴' },
+      { id: 'again', label: '🔁' },
+      { id: 'lost', label: '❓' },
     ],
     correct: ['done'],
     nextHint: 'You’re done! Tap **Finish** and head back to the ACM table to claim your prize.'
