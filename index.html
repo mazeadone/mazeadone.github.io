@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ACM QR Scavenger Hunt</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="home">
+  <header>
+    <div class="title">ACM QR Scavenger Hunt!</div>
+    <p class="subtitle">Scan → Solve → Scoot. Each puzzle gives the <strong>next location</strong>. When you reach that spot, scan the posted QR to load the next clue.</p>
+  </header>
+
+  <main class="wrap">
+    <section class="card">
+      <h2>Team Setup <span class="tag">Start here</span></h2>
+      <p class="hint">Type a team name once. We'll remember it on this device (localStorage).</p>
+      <div class="stack">
+        <label>
+          Team name
+          <input id="teamInput" type="text" placeholder="Team Eagles" />
+        </label>
+        <div class="actions">
+          <button class="btn" id="saveTeam" type="button">Save team</button>
+          <a class="btn secondary" href="hunt/1.html">Start (if you already scanned the starter QR)</a>
+          <button class="btn ghost" id="resetRun" type="button">Reset run (this device)</button>
+          <a class="btn ghost" href="https://GSACM.github.io" target="_blank" rel="noopener">ACM Site</a>
+        </div>
+        <div id="homeMsg" aria-live="polite"></div>
+        <div class="tiny" id="teamLabel"></div>
+      </div>
+    
+</section>
+
+    <section class="card">
+      <h2>Leaderboard <span class="tag">Live</span></h2>
+      <p class="hint">Fastest total time wins. Splits show time between each QR.</p>
+      <div id="leaderboard"></div>
+    </section>
+
+
+    <section class="card">
+      <h2>How this works</h2>
+      <ol style="margin:0; padding-left: 1.2rem">
+        <li>Scan the <strong>Starter QR</strong> at the ACM table (or press Start if you're already there).</li>
+        <li>Solve the puzzle. The answer unlocks a hint for the next location.</li>
+        <li>Go to that location and scan the posted QR to get the next clue page.</li>
+        <li>Finish the last clue and come back to the ACM table.</li>
+      </ol>
+      <p class="tiny" style="margin-top:10px">Heads up: this is a static GitHub Pages site (no server). Progress is stored only on your device.</p>
+    </section>
+  </main>
+
+  <footer>
+    Questions? Find ACM at the Organization Fair.
+  </footer>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>

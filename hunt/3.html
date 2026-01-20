@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Clue 3 · ACM Hunt</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body data-page="clue3">
+  <header>
+    <div class="title">Clue 3</div>
+    <p class="subtitle">Solve the puzzle. When you unlock the hint, go to that location and scan the posted QR.</p>
+  </header>
+
+  <main class="wrap">
+    <section class="card" style="grid-column: 1 / -1;">
+      <h2 id="pTitle">Loading… <span class="tag">Puzzle</span></h2>
+      <div class="progress" aria-label="progress dots" id="progressRow"></div>
+      <p class="hint" id="pPrompt"></p>
+
+      <div id="pBody"></div>
+
+      <div class="stack" style="margin-top:12px">
+        <label>
+          Your answer (location keyword)
+          <input id="answer" type="text" placeholder="e.g., union / library / hanner" autocomplete="off" />
+        </label>
+        <div class="actions">
+          <button class="btn" id="unlock" type="button">Unlock hint</button>
+          <button class="btn ghost" id="volunteerHelp" type="button">Volunteer hint</button>
+          <a class="btn secondary" href="../index.html">Home</a>
+        </div>
+        <div id="result" aria-live="polite"></div>
+        <div class="tiny" id="teamLabel"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    ACM @ Organization Fair
+  </footer>
+
+  <script src="../assets/app.js"></script>
+</body>
+</html>

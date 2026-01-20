@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Clue 2 · ACM Hunt</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body data-page="clue2">
+  <header>
+    <div class="title">Clue 2</div>
+    <p class="subtitle">Solve the puzzle. The unlocked hint tells you where the next QR is.</p>
+  </header>
+
+  <main class="wrap">
+    <section class="card" style="grid-column: 1 / -1">
+      <h2 id="pTitle">Clue</h2>
+      <div class="progress">
+        <div id="teamLabel" class="tiny"></div>
+        <div id="progressRow" class="progress" aria-label="progress"></div>
+      </div>
+
+      <p id="pPrompt" class="hint"></p>
+      <div id="pBody"></div>
+
+      <div class="stack" style="margin-top:12px">
+        <label>
+          Answer keyword
+          <input id="answer" type="text" placeholder="type the location keyword" autocomplete="off" />
+        </label>
+        <div class="actions">
+          <button class="btn" id="unlock" type="button">Unlock next hint</button>
+          <button class="btn ghost" id="volunteerHelp" type="button">Volunteer hint</button>
+          <a class="btn secondary" href="../index.html">Home</a>
+        </div>
+        <div id="result" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>Keep moving — don’t block doorways 🙂</footer>
+
+  <script src="../assets/app.js"></script>
+</body>
+</html>

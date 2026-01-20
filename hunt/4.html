@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Clue 4 · ACM Hunt</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body data-page="clue4">
+  <header>
+    <div class="title">Clue 4</div>
+    <p class="subtitle">Final puzzle. Unlock the hint, then scan the final QR to finish.</p>
+  </header>
+
+  <main class="wrap">
+    <section class="card" style="grid-column: 1 / -1;">
+      <h2 id="pTitle">Loading…</h2>
+      <div class="progress" aria-label="progress dots" id="progressRow"></div>
+      <div class="tiny" id="teamLabel"></div>
+      <p class="hint" id="pPrompt"></p>
+      <div id="pBody"></div>
+
+      <div class="stack" style="margin-top:12px">
+        <label>
+          Answer keyword
+          <input id="answer" type="text" placeholder="type the location keyword" autocomplete="off" />
+        </label>
+        <div class="actions">
+          <button class="btn" id="unlock" type="button">Unlock hint</button>
+          <button class="btn ghost" id="volunteerHelp" type="button">Volunteer hint</button>
+          <a class="btn secondary" href="../index.html">Home</a>
+        </div>
+        <div id="result" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>When you scan the final QR, you’re done ✅</footer>
+
+  <script src="../assets/app.js"></script>
+</body>
+</html>
