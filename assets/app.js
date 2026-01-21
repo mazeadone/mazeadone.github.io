@@ -197,23 +197,34 @@ function markdownLite(s){
   return (s||'').replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 }
 
-function recordSplit(stepNum){
+function recordSplit(stepNum) {
   ensureStart();
+
+  const idx = Number(stepNum) - 1;
+  if (idx < 0) return;
+
   const checkpoints = getArr(STORE.CHECKPOINTS);
   const splits = getArr(STORE.SPLITS);
 
+  // ✅ prevent double-record for the same step
+  if (splits[idx] != null) return;
+
   const t = now();
-  // last checkpoint is either start_ts or previous checkpoint
   const start = getStartTs();
-  const prev = (checkpoints.length>0 ? checkpoints[checkpoints.length-1] : start);
+  const prev = (idx === 0)
+    ? start
+    : (Number(checkpoints[idx - 1]) || start);
+
   const split = t - prev;
 
-  checkpoints.push(t);
-  splits.push(split);
+  // ✅ write by index so step 1 always lives at index 0, etc.
+  checkpoints[idx] = t;
+  splits[idx] = split;
 
   setArr(STORE.CHECKPOINTS, checkpoints);
   setArr(STORE.SPLITS, splits);
 }
+
 
 function checkAnswer(step, selectedId){
   let raw = '';
@@ -233,6 +244,8 @@ function checkAnswer(step, selectedId){
     out.innerHTML = `<div class="bad">Not quite — try again.</div>`;
     return;
   }
+  document.querySelectorAll('.mcqBtn').forEach(b => b.disabled = true);
+
 
   const stepNum = Number(($('pBody')?.dataset.step)||0) || inferStepFromPath();
   recordSplit(stepNum);
@@ -394,94 +407,140 @@ function renderCampusMap(){
   const host = $('campusMap');
   if (!host) return;
 
-  // SVG campus map with hunt locations + decoy buildings
+  // SVG campus map with corrected Georgia Southern layout
   const svg = `
-    <svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:600px; margin:0 auto; display:block;">
-      <!-- Background -->
-      <rect width="800" height="600" fill="#f5f9f5"/>
+    <svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:700px; margin:0 auto; display:block;">
+      <defs>
+        <filter id="shadow">
+          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.2"/>
+        </filter>
+      </defs>
       
-      <!-- Roads/paths -->
-      <line x1="0" y1="300" x2="800" y2="300" stroke="#ccc" stroke-width="4"/>
-      <line x1="400" y1="0" x2="400" y2="600" stroke="#ccc" stroke-width="4"/>
+      <!-- Background with subtle gradient -->
+      <rect width="800" height="600" fill="#f8fcf8"/>
+      <rect width="800" height="600" fill="url(#grassGradient)"/>
+      <defs>
+        <linearGradient id="grassGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#f0f8f0;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#e8f5e8;stop-opacity:1" />
+        </linearGradient>
+      </defs>
       
-      <!-- Decorative trees -->
-      <circle cx="150" cy="150" r="25" fill="#90d050" opacity="0.7"/>
-      <circle cx="650" cy="150" r="25" fill="#90d050" opacity="0.7"/>
-      <circle cx="150" cy="450" r="25" fill="#90d050" opacity="0.7"/>
-      <circle cx="650" cy="450" r="25" fill="#90d050" opacity="0.7"/>
+      <!-- Main roads forming + shape -->
+      <path d="M 50 295 L 750 295" stroke="#c9b896" stroke-width="14" fill="none" opacity="0.5"/>
+      <path d="M 400 50 L 400 550" stroke="#c9b896" stroke-width="12" fill="none" opacity="0.5"/>
       
-      <!-- START: Russell Union (ACM Table) -->
-      <g class="map-building start">
-        <rect x="350" y="50" width="100" height="80" fill="#ff6f00" stroke="#141414" stroke-width="3" rx="8"/>
-        <text x="400" y="90" text-anchor="middle" font-size="32" fill="white">🏛️</text>
-        <text x="400" y="110" text-anchor="middle" font-size="11" font-weight="bold" fill="white">START</text>
+      <!-- Green spaces with trees clusters -->
+      <ellipse cx="200" cy="150" rx="60" ry="45" fill="#90d050" opacity="0.15"/>
+      <ellipse cx="650" cy="450" rx="70" ry="50" fill="#90d050" opacity="0.15"/>
+      
+      <!-- Scattered trees for realism -->
+      <circle cx="180" cy="140" r="14" fill="#6ba832" opacity="0.5"/>
+      <circle cx="220" cy="155" r="16" fill="#78b83e" opacity="0.5"/>
+      <circle cx="195" cy="175" r="12" fill="#6ba832" opacity="0.5"/>
+      <circle cx="630" cy="440" r="18" fill="#6ba832" opacity="0.5"/>
+      <circle cx="670" cy="460" r="14" fill="#78b83e" opacity="0.5"/>
+      <circle cx="700" cy="420" r="13" fill="#6ba832" opacity="0.5"/>
+      <circle cx="520" cy="180" r="15" fill="#78b83e" opacity="0.5"/>
+      
+      <!-- Lake (left side, replacing Hanner position) -->
+      <path d="M 100 320 Q 140 290, 200 300 Q 250 310, 260 350 Q 250 390, 200 400 Q 140 410, 110 380 Q 80 350, 100 320 Z" 
+            fill="#87ceeb" stroke="#5a9fb5" stroke-width="2" opacity="0.85" filter="url(#shadow)"/>
+      <text x="175" y="355" text-anchor="middle" font-size="13" font-weight="600" fill="#4a7a8c" opacity="0.8">Lake</text>
+      
+      <!-- Water ripple effect -->
+      <ellipse cx="160" cy="340" rx="25" ry="12" fill="white" opacity="0.2"/>
+      <ellipse cx="200" cy="370" rx="20" ry="10" fill="white" opacity="0.15"/>
+      
+      <!-- Rotunda - right before Russell Union (far middle right) -->
+      <g filter="url(#shadow)">
+        <circle cx="560" cy="295" r="38" fill="#90d050" stroke="#0b3b13" stroke-width="3" opacity="0.7"/>
+        <circle cx="560" cy="295" r="28" fill="none" stroke="#fff" stroke-width="2" opacity="0.4"/>
+        <text x="560" y="305" text-anchor="middle" font-size="18">⭕</text>
       </g>
-      <text x="400" y="145" text-anchor="middle" font-size="12" font-weight="600" fill="#333">Russell Union</text>
+      <text x="560" y="345" text-anchor="middle" font-size="11" font-weight="600" fill="#2c2c2c">Rotunda</text>
       
-      <!-- HUNT STOP 1: Lakeside Dining -->
-      <g class="map-building hunt">
-        <rect x="100" y="200" width="90" height="80" fill="#6bd425" stroke="#0b3b13" stroke-width="3" rx="8"/>
-        <text x="145" y="240" text-anchor="middle" font-size="32">🍽️</text>
-        <text x="145" y="260" text-anchor="middle" font-size="11" font-weight="bold" fill="#0b3b13">STOP 1</text>
+      <!-- START: Russell Union (far middle right) -->
+      <g class="map-building start" filter="url(#shadow)">
+        <path d="M 645 265 L 745 265 L 745 330 L 645 330 Z" fill="#ff6f00" stroke="#141414" stroke-width="2.5"/>
+        <path d="M 640 265 L 695 245 L 750 265 Z" fill="#d95f00" stroke="#141414" stroke-width="2"/>
+        <rect x="675" y="280" width="15" height="25" fill="#8b4000" opacity="0.6"/>
+        <rect x="705" y="280" width="15" height="25" fill="#8b4000" opacity="0.6"/>
+        <text x="695" y="302" text-anchor="middle" font-size="24" fill="white">🏛️</text>
+        <text x="695" y="320" text-anchor="middle" font-size="9" font-weight="bold" fill="white">START</text>
       </g>
-      <text x="145" y="295" text-anchor="middle" font-size="12" font-weight="600" fill="#333">Lakeside</text>
+      <text x="695" y="350" text-anchor="middle" font-size="12" font-weight="700" fill="#2c2c2c">Russell Union</text>
       
-      <!-- HUNT STOP 2: IT Building -->
-      <g class="map-building hunt">
-        <rect x="610" y="200" width="90" height="80" fill="#6bd425" stroke="#0b3b13" stroke-width="3" rx="8"/>
-        <text x="655" y="240" text-anchor="middle" font-size="32">💻</text>
-        <text x="655" y="260" text-anchor="middle" font-size="11" font-weight="bold" fill="#0b3b13">STOP 2</text>
+      <!-- HUNT STOP 1: Lakeside Dining (right of lake) -->
+      <g class="map-building hunt" filter="url(#shadow)">
+        <path d="M 290 310 L 385 310 L 385 350 L 335 350 L 335 390 L 290 390 Z" 
+              fill="#6bd425" stroke="#0b3b13" stroke-width="2.5"/>
+        <rect x="300" y="320" width="12" height="18" fill="#fff" opacity="0.5"/>
+        <rect x="320" y="320" width="12" height="18" fill="#fff" opacity="0.5"/>
+        <rect x="340" y="320" width="12" height="18" fill="#fff" opacity="0.5"/>
+        <text x="335" y="345" text-anchor="middle" font-size="24">🍽️</text>
+        <text x="335" y="375" text-anchor="middle" font-size="9" font-weight="bold" fill="#0b3b13">STOP 1</text>
       </g>
-      <text x="655" y="295" text-anchor="middle" font-size="12" font-weight="600" fill="#333">IT Building</text>
+      <text x="335" y="410" text-anchor="middle" font-size="12" font-weight="700" fill="#2c2c2c">Lakeside Dining</text>
       
-      <!-- HUNT STOP 3: IAB -->
-      <g class="map-building hunt">
-        <rect x="100" y="350" width="90" height="80" fill="#6bd425" stroke="#0b3b13" stroke-width="3" rx="8"/>
-        <text x="145" y="390" text-anchor="middle" font-size="32">🌳</text>
-        <text x="145" y="410" text-anchor="middle" font-size="11" font-weight="bold" fill="#0b3b13">STOP 3</text>
+      <!-- Decoy: Henderson Library (upper middle left) -->
+      <g class="map-building decoy" opacity="0.45" filter="url(#shadow)">
+        <rect x="250" y="120" width="95" height="60" fill="#d4d4d4" stroke="#888" stroke-width="2" rx="3"/>
+        <path d="M 245 120 L 297 100 L 350 120 Z" fill="#b8b8b8" stroke="#888" stroke-width="1.5"/>
+        <text x="297" y="156" text-anchor="middle" font-size="22">📚</text>
       </g>
-      <text x="145" y="445" text-anchor="middle" font-size="12" font-weight="600" fill="#333">IAB</text>
+      <text x="297" y="195" text-anchor="middle" font-size="11" fill="#666">Henderson Library</text>
       
-      <!-- Decoy buildings (not part of hunt) -->
-      <g class="map-building decoy" opacity="0.5">
-        <rect x="250" y="200" width="80" height="70" fill="#e0e0e0" stroke="#999" stroke-width="2" rx="6"/>
-        <text x="290" y="240" text-anchor="middle" font-size="24">📚</text>
+      <!-- HUNT STOP 2: IT Building (far left, below Henderson Library) -->
+      <g class="map-building hunt" filter="url(#shadow)">
+        <rect x="90" y="210" width="110" height="65" fill="#6bd425" stroke="#0b3b13" stroke-width="2.5" rx="4"/>
+        <rect x="180" y="230" width="30" height="45" fill="#5fc115" stroke="#0b3b13" stroke-width="2"/>
+        <rect x="105" y="220" width="14" height="12" fill="#fff" opacity="0.4"/>
+        <rect x="125" y="220" width="14" height="12" fill="#fff" opacity="0.4"/>
+        <rect x="145" y="220" width="14" height="12" fill="#fff" opacity="0.4"/>
+        <rect x="105" y="250" width="14" height="12" fill="#fff" opacity="0.4"/>
+        <rect x="125" y="250" width="14" height="12" fill="#fff" opacity="0.4"/>
+        <text x="145" y="248" text-anchor="middle" font-size="24">💻</text>
       </g>
-      <text x="290" y="285" text-anchor="middle" font-size="11" fill="#666">Library</text>
+      <text x="145" y="292" text-anchor="middle" font-size="12" font-weight="700" fill="#2c2c2c">IT Building</text>
       
-      <g class="map-building decoy" opacity="0.5">
-        <rect x="470" y="200" width="80" height="70" fill="#e0e0e0" stroke="#999" stroke-width="2" rx="6"/>
-        <text x="510" y="240" text-anchor="middle" font-size="24">🏋️</text>
+      <!-- HUNT STOP 3: IAB (lower middle) -->
+      <g class="map-building hunt" filter="url(#shadow)">
+        <path d="M 350 455 L 455 455 L 465 480 L 465 530 L 350 530 Z" 
+              fill="#6bd425" stroke="#0b3b13" stroke-width="2.5"/>
+        <rect x="365" y="470" width="13" height="15" fill="#fff" opacity="0.4"/>
+        <rect x="390" y="470" width="13" height="15" fill="#fff" opacity="0.4"/>
+        <rect x="415" y="470" width="13" height="15" fill="#fff" opacity="0.4"/>
+        <rect x="440" y="470" width="13" height="15" fill="#fff" opacity="0.4"/>
+        <text x="405" y="500" text-anchor="middle" font-size="24">🌳</text>
+        <text x="405" y="517" text-anchor="middle" font-size="9" font-weight="bold" fill="#0b3b13">STOP 3</text>
       </g>
-      <text x="510" y="285" text-anchor="middle" font-size="11" fill="#666">Rec Center</text>
+      <text x="405" y="550" text-anchor="middle" font-size="12" font-weight="700" fill="#2c2c2c">IAB Building</text>
       
-      <g class="map-building decoy" opacity="0.5">
-        <rect x="250" y="350" width="80" height="70" fill="#e0e0e0" stroke="#999" stroke-width="2" rx="6"/>
-        <text x="290" y="390" text-anchor="middle" font-size="24">🧪</text>
+      <!-- Decoy: Stadium (right side, lower) -->
+      <g class="map-building decoy" opacity="0.45" filter="url(#shadow)">
+        <ellipse cx="640" cy="470" rx="55" ry="45" fill="#d4d4d4" stroke="#888" stroke-width="2"/>
+        <rect x="610" y="445" width="60" height="50" fill="#d4d4d4" stroke="#888" stroke-width="2" rx="5"/>
+        <text x="640" y="478" text-anchor="middle" font-size="22">🏟️</text>
       </g>
-      <text x="290" y="435" text-anchor="middle" font-size="11" fill="#666">Science</text>
+      <text x="640" y="530" text-anchor="middle" font-size="11" fill="#666">Stadium</text>
       
-      <g class="map-building decoy" opacity="0.5">
-        <rect x="470" y="350" width="80" height="70" fill="#e0e0e0" stroke="#999" stroke-width="2" rx="6"/>
-        <text x="510" y="390" text-anchor="middle" font-size="24">🏠</text>
+      <!-- FINISH marker -->
+      <g class="map-building finish" filter="url(#shadow)">
+        <rect x="480" y="410" width="85" height="65" fill="#00a7ff" stroke="#054a73" stroke-width="2.5" rx="8"/>
+        <text x="522" y="442" text-anchor="middle" font-size="24">🏁</text>
+        <text x="522" y="460" text-anchor="middle" font-size="9" font-weight="bold" fill="white">FINISH</text>
       </g>
-      <text x="510" y="435" text-anchor="middle" font-size="11" fill="#666">Housing</text>
+      <text x="522" y="490" text-anchor="middle" font-size="12" font-weight="700" fill="#2c2c2c">Return to ACM</text>
       
-      <!-- FINISH: Back to Union -->
-      <g class="map-building finish">
-        <rect x="610" y="350" width="90" height="80" fill="#00a7ff" stroke="#054a73" stroke-width="3" rx="8"/>
-        <text x="655" y="390" text-anchor="middle" font-size="32">🏁</text>
-        <text x="655" y="410" text-anchor="middle" font-size="11" font-weight="bold" fill="white">FINISH</text>
-      </g>
-      <text x="655" y="445" text-anchor="middle" font-size="12" font-weight="600" fill="#333">Return to ACM</text>
-      
-      <!-- Legend -->
-      <g transform="translate(20, 520)">
-        <rect x="0" y="0" width="15" height="15" fill="#6bd425" stroke="#0b3b13" stroke-width="2" rx="3"/>
-        <text x="20" y="12" font-size="11" fill="#333">Hunt Stop</text>
+      <!-- Legend with better styling -->
+      <g transform="translate(30, 545)">
+        <rect x="-10" y="-8" width="250" height="45" fill="white" opacity="0.85" rx="6" stroke="#ccc" stroke-width="1"/>
+        <rect x="0" y="0" width="18" height="18" fill="#6bd425" stroke="#0b3b13" stroke-width="2" rx="3"/>
+        <text x="24" y="14" font-size="12" font-weight="600" fill="#333">Hunt Location</text>
         
-        <rect x="100" y="0" width="15" height="15" fill="#e0e0e0" stroke="#999" stroke-width="2" rx="3" opacity="0.5"/>
-        <text x="120" y="12" font-size="11" fill="#666">Other Buildings</text>
+        <rect x="140" y="0" width="18" height="18" fill="#d4d4d4" stroke="#888" stroke-width="2" rx="3" opacity="0.6"/>
+        <text x="164" y="14" font-size="12" fill="#666">Other Building</text>
       </g>
     </svg>
   `;
@@ -574,19 +633,22 @@ function initClue(stepNum){
   }
 }
 
-async function initDone(){
+async function initDone() {
   renderTeam();
-  const splits = getArr(STORE.SPLITS);
-  const totalMs = splits.reduce((a,b)=>a+Number(b||0),0);
+
+  // ✅ only first 4 splits count, always numeric
+  const splitsRaw = getArr(STORE.SPLITS);
+  const splits = splitsRaw.slice(0, 4).map(v => Number(v) || 0);
+  const totalMs = splits.reduce((sum, v) => sum + v, 0);
 
   const el = $('finalTimes');
-  if (el){
+  if (el) {
     el.innerHTML = `
       <div class="times">
-        <div>Split 1: <strong>${msToClock(splits[0]||0)}</strong></div>
-        <div>Split 2: <strong>${msToClock(splits[1]||0)}</strong></div>
-        <div>Split 3: <strong>${msToClock(splits[2]||0)}</strong></div>
-        <div>Split 4: <strong>${msToClock(splits[3]||0)}</strong></div>
+        <div>Split 1: <strong>${msToClock(splits[0] || 0)}</strong></div>
+        <div>Split 2: <strong>${msToClock(splits[1] || 0)}</strong></div>
+        <div>Split 3: <strong>${msToClock(splits[2] || 0)}</strong></div>
+        <div>Split 4: <strong>${msToClock(splits[3] || 0)}</strong></div>
         <div class="total">Total: <strong>${msToClock(totalMs)}</strong></div>
       </div>
     `;
@@ -596,22 +658,21 @@ async function initDone(){
   const payload = { team, splits, totalMs };
 
   const status = $('submitStatus');
-  if (status){
-    if (!CONFIG.leaderboardEnabled){
+  if (status) {
+    if (!CONFIG.leaderboardEnabled) {
       status.innerHTML = `<div class="tiny">Leaderboard disabled. Show this screen to ACM staff to claim your prize.</div>`;
     } else {
       status.innerHTML = `<div class="tiny">Submitting…</div>`;
-      try{
+      try {
         await submitToGoogleForm(payload);
         status.innerHTML = `<div class="good">Submitted to leaderboard!</div>`;
-      }catch{
+      } catch {
         status.innerHTML = `<div class="bad">Couldn’t auto-submit. Show this screen to ACM staff.</div>`;
       }
     }
   }
-
-  // After finishing, keep progress but allow reset from home.
 }
+
 
 document.addEventListener('DOMContentLoaded', ()=>{
   const page = document.body.dataset.page;
