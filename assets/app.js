@@ -15,26 +15,29 @@ const CONFIG = {
   // 1) Create a Google Form that writes to a Google Sheet.
   // 2) Put the formResponse URL + entry IDs below so this site can submit results without CORS.
   // 3) Publish the linked Google Sheet and read it via OpenSheet (CORS-friendly).
-  leaderboardEnabled: false,
+  leaderboardEnabled: true,
 
   // Example: 'https://docs.google.com/forms/d/e/XXXXXXXXXXXX/formResponse'
-  googleFormAction: '',
+  googleFormAction: 'https://docs.google.com/forms/d/e/1FAIpQLSdpershkxHEr-O72V3Lkp7fa3dOpu4En067PEC0rvXiq7S31A/formResponse',
 
   // Map of form entry IDs. (See README below.)
   formEntries: {
-    team: '',     // e.g. 'entry.123456789'
-    totalMs: '',  // e.g. 'entry.234567890'
-    s1Ms: '',
-    s2Ms: '',
-    s3Ms: '',
-    s4Ms: '',
+    team: 'entry.1025134229',     // e.g. 'entry.123456789'
+    totalMs: 'entry.962831989',  // e.g. 'entry.234567890'
+    s1Ms: 'entry.972432832',
+    s2Ms: 'entry.528332285',
+    s3Ms: 'entry.1887287050',
+    s4Ms: 'entry.1908666368',
   },
 
   // Example OpenSheet URL: `https://opensheet.elk.sh/<SHEET_ID>/<TAB_NAME>`
-  openSheetUrl: '',
+  openSheetUrl: 'https://opensheet.elk.sh/1zv_u5eqyHDDWcXqUdnsd0D_S9hDsjCDQAuu-ROQrkRs/Form%20Responses%201',
 
   // How many rows to show on homepage
   leaderboardLimit: 12,
+  
+  // Auto-refresh interval in milliseconds (30 seconds)
+  leaderboardRefreshMs: 30000,
 };
 
 function $(id){ return document.getElementById(id); }
@@ -336,13 +339,19 @@ async function renderLeaderboard(){
     return;
   }
 
+  // Check if URLs are configured
+  if (!CONFIG.googleFormAction || !CONFIG.openSheetUrl){
+    host.innerHTML = `<div class="tiny" style="background:#fff4e6;padding:12px;border-radius:12px;border:2px solid #ff8c00;">⚙️ <strong>Setup Required:</strong> Configure Google Form and Sheet URLs in app.js to enable live leaderboard.</div>`;
+    return;
+  }
+
   host.innerHTML = `<div class="tiny">Loading leaderboard…</div>`;
   let rows = [];
   try { rows = await fetchLeaderboard(); }
   catch { rows = []; }
 
   if (!rows.length){
-    host.innerHTML = `<div class="tiny">No results yet (or sheet not configured).</div>`;
+    host.innerHTML = `<div class="tiny" style="background:#f0f9ff;padding:12px;border-radius:12px;border:2px solid #00a7ff;">📊 No submissions yet. Be the first to complete the hunt!</div>`;
     return;
   }
 
@@ -380,6 +389,106 @@ function escapeHtml(s){
   return String(s||'').replace(/[&<>"]/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
 }
 
+// ===== Campus Map =====
+function renderCampusMap(){
+  const host = $('campusMap');
+  if (!host) return;
+
+  // SVG campus map with hunt locations + decoy buildings
+  const svg = `
+    <svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:600px; margin:0 auto; display:block;">
+      <!-- Background -->
+      <rect width="800" height="600" fill="#f5f9f5"/>
+      
+      <!-- Roads/paths -->
+      <line x1="0" y1="300" x2="800" y2="300" stroke="#ccc" stroke-width="4"/>
+      <line x1="400" y1="0" x2="400" y2="600" stroke="#ccc" stroke-width="4"/>
+      
+      <!-- Decorative trees -->
+      <circle cx="150" cy="150" r="25" fill="#90d050" opacity="0.7"/>
+      <circle cx="650" cy="150" r="25" fill="#90d050" opacity="0.7"/>
+      <circle cx="150" cy="450" r="25" fill="#90d050" opacity="0.7"/>
+      <circle cx="650" cy="450" r="25" fill="#90d050" opacity="0.7"/>
+      
+      <!-- START: Russell Union (ACM Table) -->
+      <g class="map-building start">
+        <rect x="350" y="50" width="100" height="80" fill="#ff6f00" stroke="#141414" stroke-width="3" rx="8"/>
+        <text x="400" y="90" text-anchor="middle" font-size="32" fill="white">🏛️</text>
+        <text x="400" y="110" text-anchor="middle" font-size="11" font-weight="bold" fill="white">START</text>
+      </g>
+      <text x="400" y="145" text-anchor="middle" font-size="12" font-weight="600" fill="#333">Russell Union</text>
+      
+      <!-- HUNT STOP 1: Lakeside Dining -->
+      <g class="map-building hunt">
+        <rect x="100" y="200" width="90" height="80" fill="#6bd425" stroke="#0b3b13" stroke-width="3" rx="8"/>
+        <text x="145" y="240" text-anchor="middle" font-size="32">🍽️</text>
+        <text x="145" y="260" text-anchor="middle" font-size="11" font-weight="bold" fill="#0b3b13">STOP 1</text>
+      </g>
+      <text x="145" y="295" text-anchor="middle" font-size="12" font-weight="600" fill="#333">Lakeside</text>
+      
+      <!-- HUNT STOP 2: IT Building -->
+      <g class="map-building hunt">
+        <rect x="610" y="200" width="90" height="80" fill="#6bd425" stroke="#0b3b13" stroke-width="3" rx="8"/>
+        <text x="655" y="240" text-anchor="middle" font-size="32">💻</text>
+        <text x="655" y="260" text-anchor="middle" font-size="11" font-weight="bold" fill="#0b3b13">STOP 2</text>
+      </g>
+      <text x="655" y="295" text-anchor="middle" font-size="12" font-weight="600" fill="#333">IT Building</text>
+      
+      <!-- HUNT STOP 3: IAB -->
+      <g class="map-building hunt">
+        <rect x="100" y="350" width="90" height="80" fill="#6bd425" stroke="#0b3b13" stroke-width="3" rx="8"/>
+        <text x="145" y="390" text-anchor="middle" font-size="32">🌳</text>
+        <text x="145" y="410" text-anchor="middle" font-size="11" font-weight="bold" fill="#0b3b13">STOP 3</text>
+      </g>
+      <text x="145" y="445" text-anchor="middle" font-size="12" font-weight="600" fill="#333">IAB</text>
+      
+      <!-- Decoy buildings (not part of hunt) -->
+      <g class="map-building decoy" opacity="0.5">
+        <rect x="250" y="200" width="80" height="70" fill="#e0e0e0" stroke="#999" stroke-width="2" rx="6"/>
+        <text x="290" y="240" text-anchor="middle" font-size="24">📚</text>
+      </g>
+      <text x="290" y="285" text-anchor="middle" font-size="11" fill="#666">Library</text>
+      
+      <g class="map-building decoy" opacity="0.5">
+        <rect x="470" y="200" width="80" height="70" fill="#e0e0e0" stroke="#999" stroke-width="2" rx="6"/>
+        <text x="510" y="240" text-anchor="middle" font-size="24">🏋️</text>
+      </g>
+      <text x="510" y="285" text-anchor="middle" font-size="11" fill="#666">Rec Center</text>
+      
+      <g class="map-building decoy" opacity="0.5">
+        <rect x="250" y="350" width="80" height="70" fill="#e0e0e0" stroke="#999" stroke-width="2" rx="6"/>
+        <text x="290" y="390" text-anchor="middle" font-size="24">🧪</text>
+      </g>
+      <text x="290" y="435" text-anchor="middle" font-size="11" fill="#666">Science</text>
+      
+      <g class="map-building decoy" opacity="0.5">
+        <rect x="470" y="350" width="80" height="70" fill="#e0e0e0" stroke="#999" stroke-width="2" rx="6"/>
+        <text x="510" y="390" text-anchor="middle" font-size="24">🏠</text>
+      </g>
+      <text x="510" y="435" text-anchor="middle" font-size="11" fill="#666">Housing</text>
+      
+      <!-- FINISH: Back to Union -->
+      <g class="map-building finish">
+        <rect x="610" y="350" width="90" height="80" fill="#00a7ff" stroke="#054a73" stroke-width="3" rx="8"/>
+        <text x="655" y="390" text-anchor="middle" font-size="32">🏁</text>
+        <text x="655" y="410" text-anchor="middle" font-size="11" font-weight="bold" fill="white">FINISH</text>
+      </g>
+      <text x="655" y="445" text-anchor="middle" font-size="12" font-weight="600" fill="#333">Return to ACM</text>
+      
+      <!-- Legend -->
+      <g transform="translate(20, 520)">
+        <rect x="0" y="0" width="15" height="15" fill="#6bd425" stroke="#0b3b13" stroke-width="2" rx="3"/>
+        <text x="20" y="12" font-size="11" fill="#333">Hunt Stop</text>
+        
+        <rect x="100" y="0" width="15" height="15" fill="#e0e0e0" stroke="#999" stroke-width="2" rx="3" opacity="0.5"/>
+        <text x="120" y="12" font-size="11" fill="#666">Other Buildings</text>
+      </g>
+    </svg>
+  `;
+  
+  host.innerHTML = svg;
+}
+
 // ===== Page initializers =====
 function initHome(){
   const saveBtn = $('saveTeam');
@@ -409,6 +518,14 @@ function initHome(){
 
   renderTeam();
   renderLeaderboard();
+  renderCampusMap();
+  
+  // Auto-refresh leaderboard every 30 seconds if enabled
+  if (CONFIG.leaderboardEnabled && CONFIG.leaderboardRefreshMs > 0){
+    setInterval(()=>{
+      renderLeaderboard();
+    }, CONFIG.leaderboardRefreshMs);
+  }
 }
 
 function initClue(stepNum){
