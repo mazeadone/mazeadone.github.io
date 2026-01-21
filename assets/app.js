@@ -100,11 +100,11 @@ const STEPS = {
     type: 'mcq',
     options: [
       { id: 'art', label: '🎨' },
-      { id: 'programming', label: '💻 + 📟' },
+      { id: 'it', label: '💻 + 📟' },
       { id: 'theater', label: '🎭' },
       { id: 'pool', label: '🏊' },
     ],
-    correct: ['programming'],
+    correct: ['it'],
     nextHint: 'Go to the **IT Building**. Find the slime poster + QR near a main hallway / lobby.'
   },
   3: {
