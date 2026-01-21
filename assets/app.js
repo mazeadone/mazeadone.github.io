@@ -400,8 +400,29 @@ function initClue(stepNum){
   body.dataset.step = String(stepNum);
 
   // Make sure answer UI exists
-  const ansWrap = $('answerWrap');
-  if (ansWrap) ansWrap.style.display = '';
+  let ansWrap = $('answerWrap');
+  if (!ansWrap){
+    ansWrap = document.createElement('div');
+    ansWrap.id = 'answerWrap';
+    ansWrap.style.display = 'none';
+    // Insert into DOM safely even if page doesn't define it
+    // Place near body end; it's hidden for MCQ anyway
+    document.body.appendChild(ansWrap);
+  }
+  if (ansWrap){
+    // Ensure a hidden input exists for storing the selection
+    let ans = $('answer');
+    if (!ans){
+      ans = document.createElement('input');
+      ans.type = 'text';
+      ans.id = 'answer';
+      ans.autocomplete = 'off';
+      ans.inputMode = 'text';
+      ans.placeholder = 'Type answer or use buttons above';
+      ansWrap.appendChild(ans);
+    }
+    ansWrap.style.display = '';
+  }
 
   // Render puzzle type
   if (step.type === 'mcq') renderMcq(step);
