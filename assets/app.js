@@ -83,7 +83,7 @@ function ensureStart(){
 const STEPS = {
   1: {
     title: 'Clue 1 · Warm-up Riddle',
-    prompt: 'Pick the emojis that best matches: “The preview is you cannot use you brain before a buffet with a lagoon view.”',
+    prompt: 'The preview is you cannot use you brain before a buffet with a lagoon view:',
     type: 'mcq',
     options: [
       { id: 'library', label: '📚 + 😼' },
@@ -96,7 +96,7 @@ const STEPS = {
   },
   2: {
     title: 'Clue 2 · Pattern Match',
-    prompt: 'This may not bring you fame but its what took to make this game.',
+    prompt: 'This may not bring you fame but its what took to make this game:',
     type: 'mcq',
     options: [
       { id: 'art', label: '🎨' },
@@ -109,7 +109,7 @@ const STEPS = {
   },
   3: {
     title: 'Clue 3 · “Many Branches”',
-    prompt: 'A sole discipline for the long-run will not be enough”',
+    prompt: 'A sole discipline for the long-run will not be enough:”',
     type: 'mcq',
     options: [
       { id: 'iab', label: '🌳 + 📚' },
@@ -380,18 +380,6 @@ function initHome(){
       setTeam(v);
       $('homeMsg').innerHTML = '<div class="good">Saved! Now scan the starter QR at the ACM table.</div>';
       renderTeam();
-    });
-  }
-
-  // reset button (optional)
-  const resetBtn = $('resetRun');
-  if (resetBtn){
-    resetBtn.addEventListener('click', ()=>{
-      localStorage.removeItem(STORE.STEP);
-      localStorage.removeItem(STORE.START_TS);
-      localStorage.removeItem(STORE.CHECKPOINTS);
-      localStorage.removeItem(STORE.SPLITS);
-      $('homeMsg').innerHTML = '<div class="good">Progress reset for this device.</div>';
     });
   }
 

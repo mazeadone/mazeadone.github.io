@@ -9,13 +9,13 @@
 <body data-page="home">
   <header>
     <div class="title">ACM QR Scavenger Hunt!</div>
-    <p class="subtitle">Scan → Solve → Scoot. Each puzzle gives the <strong>next location</strong>. When you reach that spot, scan the posted QR to load the next clue.</p>
+    <p class="subtitle">Scan → Solve → Scoot.</p>
   </header>
 
   <main class="wrap">
     <section class="card">
-      <h2>Team Setup <span class="tag">Start here</span></h2>
-      <p class="hint">Type a team name once. We'll remember it on this device (localStorage).</p>
+      <h2>Welcome to our first ACM QR hunt! <span class="tag">Start here</span></h2>
+      <p class="hint">Type your name/alias or a team name:</p>
       <div class="stack">
         <label>
           Team name
@@ -24,7 +24,6 @@
         <div class="actions">
           <button class="btn" id="saveTeam" type="button">Save team</button>
           <a class="btn secondary" href="hunt/1.html">Start (if you already scanned the starter QR)</a>
-          <button class="btn ghost" id="resetRun" type="button">Reset run (this device)</button>
           <a class="btn ghost" href="https://GSACM.github.io" target="_blank" rel="noopener">ACM Site</a>
         </div>
         <div id="homeMsg" aria-live="polite"></div>
@@ -43,12 +42,12 @@
     <section class="card">
       <h2>How this works</h2>
       <ol style="margin:0; padding-left: 1.2rem">
-        <li>Scan the <strong>Starter QR</strong> at the ACM table (or press Start if you're already there).</li>
-        <li>Solve the puzzle. The answer unlocks a hint for the next location.</li>
+        <li>Scan the <strong>Starter QR</strong> at the ACM table.</li>
+        <li>Solve the puzzle. Solving it unlocks a hint for the next location.</li>
         <li>Go to that location and scan the posted QR to get the next clue page.</li>
-        <li>Finish the last clue and come back to the ACM table.</li>
+        <li>Finish the last clue and let us know what you think!</li>
       </ol>
-      <p class="tiny" style="margin-top:10px">Heads up: this is a static GitHub Pages site (no server). Progress is stored only on your device.</p>
+      <p class="tiny" style="margin-top:10px">@  copyright of the current ACM Vice President</p>
     </section>
   </main>
 
