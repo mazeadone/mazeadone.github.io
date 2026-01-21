@@ -166,12 +166,14 @@ function renderMcq(step){
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'mcqBtn';
-    btn.innerHTML = `<div class="mcqEmoji">${opt.label.split(' ')[0]}</div><div class="mcqText">${opt.label.replace(/^\S+\s*/,'')}</div>`;
+    const face = document.createElement('div');
+    face.className = 'mcqEmoji';
+    face.textContent = opt.label; // render full label at uniform size
+    btn.appendChild(face);
+
     btn.addEventListener('click', ()=>{
-      // store selection in hidden input (so we can reuse the same check logic)
-      const ans = $('answer');
-      if (ans) ans.value = opt.id;
-      checkAnswer(step);
+      // validate directly using selected option id (no text input)
+      checkAnswer(step, opt.id);
     });
     grid.appendChild(btn);
   });
@@ -181,6 +183,10 @@ function renderMcq(step){
   // Hide the “type answer” UI for mcq, but keep it for accessibility (screen readers / manual entry).
   const ansWrap = $('answerWrap');
   if (ansWrap) ansWrap.style.display = 'none';
+
+  // Hide the redundant Unlock button for MCQ (selection unlocks immediately)
+  const unlock = $('unlock');
+  if (unlock) unlock.style.display = 'none';
 }
 
 function markdownLite(s){
@@ -206,12 +212,19 @@ function recordSplit(stepNum){
   setArr(STORE.SPLITS, splits);
 }
 
-function checkAnswer(step){
-  const raw = ($('answer')?.value || '').trim().toLowerCase();
+function checkAnswer(step, selectedId){
+  let raw = '';
+  if (selectedId != null) raw = String(selectedId).toLowerCase();
+  else raw = ($('answer')?.value || '').trim().toLowerCase();
   const ok = step.correct.map(x=>String(x).toLowerCase()).includes(raw);
 
   const out = $('result');
   if (!out) return;
+
+  if (!raw && step.type === 'mcq'){
+    out.innerHTML = `<div class="bad">Pick an option first.</div>`;
+    return;
+  }
 
   if (!ok){
     out.innerHTML = `<div class="bad">Not quite — try again.</div>`;
@@ -379,6 +392,17 @@ function initHome(){
       }
       setTeam(v);
       $('homeMsg').innerHTML = '<div class="good">Saved! Now scan the starter QR at the ACM table.</div>';
+      renderTeam();
+    });
+  }
+
+  // Pre-fill saved team and auto-save as the user types
+  const teamInput = $('teamInput');
+  if (teamInput){
+    const existing = getTeam();
+    if (existing) teamInput.value = existing;
+    teamInput.addEventListener('input', ()=>{
+      setTeam(teamInput.value || '');
       renderTeam();
     });
   }
