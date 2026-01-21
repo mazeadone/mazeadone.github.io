@@ -321,7 +321,63 @@ function submitToGoogleForm(payload){
 }
 
 // ===== Leaderboard read (OpenSheet) =====
-async function fetchLeaderboard(){
+// ===== Leaderboard read (OpenSheet) =====
+function normKey(s) { return String(s || '').trim().toLowerCase(); }
+
+function pickValue(row, candidates) {
+  // candidates: array of strings to match against keys (case-insensitive, substring match)
+  const keys = Object.keys(row || {});
+  const lower = keys.map(k => [k, normKey(k)]);
+  for (const cand of candidates) {
+    const c = normKey(cand);
+    // exact or substring match
+    const hit = lower.find(([, lk]) => lk === c) || lower.find(([, lk]) => lk.includes(c));
+    if (hit) return row[hit[0]];
+  }
+  return undefined;
+}
+
+function toNum(v) {
+  // handles "12,345", "12345", "", null, etc.
+  if (v == null) return 0;
+  const s = String(v).replace(/,/g, '').trim();
+  const n = Number(s);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function extractTeam(row) {
+  const v =
+    pickValue(row, [
+      'team', 'team name', 'Team', 'Team Name',
+      // Google Forms common header
+      'what is your team name'
+    ]) ?? '';
+  return String(v).trim();
+}
+
+function extractMs(row, kind, idx) {
+  // kind: 'total' or 'split'
+  // idx: 1..4 for split
+  const base = kind === 'total'
+    ? ['totalms', 'total ms', 'total', 'time', 'final', 'overall']
+    : [
+      `s${idx}ms`, `s${idx} ms`,
+      `split${idx}ms`, `split ${idx} ms`,
+      `split${idx}`, `split ${idx}`,
+      `checkpoint${idx}`, `checkpoint ${idx}`
+    ];
+
+  // Also try matching Google Form question text patterns
+  const formText = kind === 'total'
+    ? ['Total (ms)', 'Total ms', 'Total time', 'Total']
+    : [`Split ${idx} (ms)`, `Split ${idx} ms`, `Split ${idx}`];
+
+  return toNum(
+    pickValue(row, [...base, ...formText])
+  );
+}
+
+async function fetchLeaderboard() {
   if (!CONFIG.leaderboardEnabled) return [];
   if (!CONFIG.openSheetUrl) return [];
 
@@ -329,20 +385,44 @@ async function fetchLeaderboard(){
   if (!res.ok) return [];
   const rows = await res.json();
 
-  // Expect columns: team, totalMs, s1Ms, s2Ms, s3Ms, s4Ms, timestamp (any order is fine)
-  const normalized = rows.map(r=>({
-    team: (r.team || r.Team || r['Team name'] || '').toString().trim(),
-    totalMs: Number(r.totalMs || r.TotalMs || r.total || r.Total || 0),
-    s1Ms: Number(r.s1Ms || r.S1Ms || r.split1 || r.Split1 || 0),
-    s2Ms: Number(r.s2Ms || r.S2Ms || r.split2 || r.Split2 || 0),
-    s3Ms: Number(r.s3Ms || r.S3Ms || r.split3 || r.Split3 || 0),
-    s4Ms: Number(r.s4Ms || r.S4Ms || r.split4 || r.Split4 || 0),
-  })).filter(x=>x.team);
+  // 1) Normalize + compute
+  const normalized = rows.map(r => {
+    const team = extractTeam(r);
+    const s1Ms = extractMs(r, 'split', 1);
+    const s2Ms = extractMs(r, 'split', 2);
+    const s3Ms = extractMs(r, 'split', 3);
+    const s4Ms = extractMs(r, 'split', 4);
 
-  normalized.sort((a,b)=>a.totalMs-b.totalMs);
-  return normalized.slice(0, CONFIG.leaderboardLimit);
+    let totalMs = extractMs(r, 'total');
+    // If Total wasn’t found (or was 0) but splits exist, compute it
+    const sumSplits = (s1Ms + s2Ms + s3Ms + s4Ms);
+    if (!totalMs && sumSplits) totalMs = sumSplits;
+
+    return { team, totalMs, s1Ms, s2Ms, s3Ms, s4Ms };
+  }).filter(x => x.team);
+
+  // 2) Ignore rows with no time at all (prevents the all-00:00 table)
+  const withTime = normalized.filter(r =>
+    r.totalMs > 0 || (r.s1Ms + r.s2Ms + r.s3Ms + r.s4Ms) > 0
+  );
+
+  // 3) Deduplicate by team (keep best/fastest total)
+  const bestByTeam = new Map();
+  for (const r of withTime) {
+    const key = normKey(r.team);
+    const existing = bestByTeam.get(key);
+    if (!existing || (r.totalMs > 0 && r.totalMs < existing.totalMs)) {
+      bestByTeam.set(key, r);
+    }
+  }
+
+  const finalRows = Array.from(bestByTeam.values());
+
+  // 4) Sort + limit
+  finalRows.sort((a, b) => (a.totalMs || 0) - (b.totalMs || 0));
+  return finalRows.slice(0, CONFIG.leaderboardLimit);
 }
-
+  
 async function renderLeaderboard(){
   const host = $('leaderboard');
   if (!host) return;
