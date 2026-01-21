@@ -83,7 +83,7 @@ function ensureStart(){
 const STEPS = {
   1: {
     title: 'Clue 1 · Warm-up Riddle',
-    prompt: 'Pick the picture that best matches: “You can’t use your brain before you’ve indulged in a buffet with a lagoon view.”',
+    prompt: 'Pick the emojis that best matches: “The preview is you cannot use you brain before a buffet with a lagoon view.”',
     type: 'mcq',
     options: [
       { id: 'library', label: '📚 + 😼' },
@@ -96,20 +96,20 @@ const STEPS = {
   },
   2: {
     title: 'Clue 2 · Pattern Match',
-    prompt: 'Pick the option that “belongs” with learning to build apps and implementations (think: coding, labs, tech).',
+    prompt: 'This may not bring you fame but its what took to make this game.',
     type: 'mcq',
     options: [
       { id: 'art', label: '🎨' },
-      { id: 'it', label: '💻 + 📟' },
+      { id: 'programming', label: '💻 + 📟' },
       { id: 'theater', label: '🎭' },
       { id: 'pool', label: '🏊' },
     ],
-    correct: ['it'],
+    correct: ['programming'],
     nextHint: 'Go to the **IT Building**. Find the slime poster + QR near a main hallway / lobby.'
   },
   3: {
     title: 'Clue 3 · “Many Branches”',
-    prompt: 'Which picture best matches: “A building of many branches of discipline.”',
+    prompt: 'A sole discipline for the long-run will not be enough”',
     type: 'mcq',
     options: [
       { id: 'iab', label: '🌳 + 📚' },
@@ -122,7 +122,7 @@ const STEPS = {
   },
   4: {
     title: 'Clue 4 · Final Check',
-    prompt: 'Last one: pick the icon that means “finish / done / claim prize.”',
+    prompt: 'You made it! Thank you for playing & we hope to collab with you at the club!',
     type: 'mcq',
     options: [
       { id: 'done', label: '🏁' },
