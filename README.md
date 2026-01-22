@@ -42,20 +42,8 @@ How to find entry IDs:
 - View page source
 - Search for `entry.` (you’ll see each input name like `entry.123456789`)
 
-> Why this works: we submit to Google using a hidden HTML `<form>` (no CORS), and we read using OpenSheet (CORS-friendly).
+submit to Google using a hidden HTML `<form>` (no CORS), and we read using OpenSheet (CORS-friendly).
 
-### Option B (no shared board)
-If you leave `leaderboardEnabled: false`, times still show on the finish page — you can award prizes manually.
-
----
-
-## Edit the hints / puzzles
-Open `assets/app.js` and edit the `STEPS` object:
-- `prompt` (puzzle question)
-- `options` (multiple choice)
-- `nextHint` (the hint revealed when correct)
-
----
 
 ## Generate / print QR codes
 
@@ -71,6 +59,3 @@ pip install qrcode pillow
 
 Then use `import qrcode.py` (rename it if you want) or any simple script to create PNGs.
 
-Printing tip:
-- Put each QR on a page with a big label: “ACM Hunt – Scan Me”
-- Print in color if you can, and tape at eye level.
