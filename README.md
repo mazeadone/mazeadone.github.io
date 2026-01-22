@@ -17,9 +17,9 @@ QR pages:
 
 ---
 
-## Leaderboard options
+## Leaderboard implementation
 
-### Option A (fast + no backend): Google Form (write) + OpenSheet (read)
+Google Form (write) + OpenSheet (read)
 This gives you a **shared leaderboard** that everyone can see on the homepage.
 
 1) Create a Google Form with fields:
